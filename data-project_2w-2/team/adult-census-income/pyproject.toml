@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools==80.9.0", "wheel==0.46.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adult-census-income-analysis"
+version = "0.1.0"
+description = "Reproducible Adult Census Income analysis pipeline"
+readme = "README.md"
+requires-python = "==3.11.*"
+dependencies = [
+    "joblib==1.5.3",
+    "matplotlib==3.11.1",
+    "pandas==3.0.3",
+    "plotly==6.9.0",
+    "polars==1.42.1",
+    "scikit-learn==1.9.0",
+    "scipy==1.17.1",
+    "seaborn==0.13.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+    "ruff==0.15.22",
+]
+
+[project.scripts]
+adult-income = "adult_income.workflow:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"

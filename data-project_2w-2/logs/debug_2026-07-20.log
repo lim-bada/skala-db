@@ -1,0 +1,14 @@
+2026-07-20 14:26:58 | INFO     | __main__ | 원본 JSON 로딩 성공: Python_Practice2_Data.json (100건)
+2026-07-20 14:26:58 | ERROR    | __main__ | CSV 파일을 찾을 수 없습니다: __missing_practice2_input__.csv
+2026-07-20 14:26:58 | DEBUG    | __main__ | 검증용 raw_data 7건을 처리합니다.
+2026-07-20 14:26:58 | DEBUG    | __main__ | 1행 검증 성공
+2026-07-20 14:26:58 | DEBUG    | __main__ | 2행 검증 성공
+2026-07-20 14:26:58 | DEBUG    | __main__ | 3행 검증 성공
+2026-07-20 14:26:58 | DEBUG    | __main__ | 4행 검증 성공
+2026-07-20 14:26:58 | DEBUG    | __main__ | 5행 검증 실패
+2026-07-20 14:26:58 | DEBUG    | __main__ | 6행 검증 실패
+2026-07-20 14:26:58 | DEBUG    | __main__ | 7행 검증 실패
+2026-07-20 14:26:58 | DEBUG    | __main__ | 유효 4건과 오류 3건의 결과 파일 저장을 시작합니다.
+2026-07-20 14:26:58 | INFO     | __main__ | 유효 레코드 CSV 저장 완료: valid_sales.csv (4건)
+2026-07-20 14:26:58 | INFO     | __main__ | 오류 레코드 JSON 저장 완료: validation_errors.json (3건)
+2026-07-20 14:26:58 | INFO     | __main__ | CSV 로딩 성공: valid_sales.csv (4건)

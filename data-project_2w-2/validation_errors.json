@@ -1,0 +1,14 @@
+[
+  {
+    "row": 5,
+    "error": "1 validation error for SalesRecord\nmonth\n  Value error, 빈 문자열 또는 공백만 사용할 수 없습니다. [type=value_error, input_value=' ', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error"
+  },
+  {
+    "row": 6,
+    "error": "1 validation error for SalesRecord\nregion\n  String should have at least 1 character [type=string_too_short, input_value='', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/string_too_short"
+  },
+  {
+    "row": 7,
+    "error": "1 validation error for SalesRecord\namount\n  Input should be greater than 0 [type=greater_than, input_value=0, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/greater_than"
+  }
+]

@@ -1,0 +1,128 @@
+// 학사관리시스템 ERD
+// dbdiagram.io에서 Import > DBML 또는 새 다이어그램에 붙여 넣어 사용
+// 범례:
+//   pk     = Primary Key(기본키)
+//   ref    = Foreign Key(외래키 참조)
+//   unique = Unique Key(고유키)
+//   >      = 다대일(N:1) 관계
+// 핵심 관계:
+//   학과 1:N 학생/교수/교과목
+//   교과목 1:N 개설강좌
+//   학생 N:M 개설강좌(수강신청으로 해소)
+//   교수 1:N 지도학생(지도교수 관계로 해소)
+//   강의실 1:N 개설강좌
+
+Table departments {
+  id bigint [pk, increment, note: '학과 PK']
+  code varchar(10) [not null, unique, note: '학과 코드']
+  name varchar(100) [not null, unique, note: '학과명']
+  office_phone varchar(20) [note: '학과 사무실 전화번호']
+}
+
+Table students {
+  id bigint [pk, increment, note: '학생 PK']
+  student_no varchar(20) [not null, unique, note: '학번']
+  department_id bigint [not null, ref: > departments.id, note: '소속 학과 FK']
+  name varchar(100) [not null, note: '학생 이름']
+  email varchar(200) [not null, unique]
+  phone varchar(20)
+  birth_date date [note: '생년월일']
+  year_level smallint [not null, note: '학년(1~4)']
+  status varchar(20) [not null, default: 'ENROLLED', note: '재학/휴학/졸업']
+  admission_date date [not null, note: '입학일']
+  created_at timestamptz [not null, default: `now()`]
+
+  Checks {
+    `year_level BETWEEN 1 AND 4` [name: 'chk_student_year_level']
+    `status IN ('ENROLLED', 'LEAVE', 'GRADUATED')` [name: 'chk_student_status']
+  }
+}
+
+Table professors {
+  id bigint [pk, increment, note: '교수 PK']
+  professor_no varchar(20) [not null, unique, note: '교수 번호']
+  department_id bigint [not null, ref: > departments.id, note: '소속 학과 FK']
+  name varchar(100) [not null, note: '교수 이름']
+  email varchar(200) [not null, unique]
+  phone varchar(20)
+  hire_date date [not null, note: '임용일']
+}
+
+Table advisors {
+  student_id bigint [pk, ref: > students.id, note: '지도 학생 FK, 학생당 지도교수 1명']
+  professor_id bigint [not null, ref: > professors.id, note: '지도교수 FK']
+  assigned_at date [not null, default: `CURRENT_DATE`, note: '지도 시작일']
+
+  Indexes {
+    (professor_id, student_id) [name: 'idx_advisor_professor']
+  }
+}
+
+Table courses {
+  id bigint [pk, increment, note: '교과목 PK']
+  course_code varchar(20) [not null, unique, note: '교과목 코드']
+  department_id bigint [not null, ref: > departments.id, note: '운영 학과 FK']
+  name varchar(100) [not null, note: '교과목명']
+  credits smallint [not null, note: '학점(1~6)']
+  description varchar(500) [note: '교과목 설명']
+
+  Checks {
+    `credits BETWEEN 1 AND 6` [name: 'chk_course_credits']
+  }
+}
+
+Table classrooms {
+  id bigint [pk, increment, note: '강의실 PK']
+  building varchar(100) [not null, note: '건물명']
+  room_no varchar(20) [not null, note: '호실']
+  capacity smallint [not null, note: '강의실 수용 인원']
+
+  Indexes {
+    (building, room_no) [unique, name: 'uq_classroom_location']
+  }
+
+  Checks {
+    `capacity > 0` [name: 'chk_classroom_capacity']
+  }
+}
+
+Table course_offerings {
+  id bigint [pk, increment, note: '개설 강좌 PK']
+  course_id bigint [not null, ref: > courses.id, note: '교과목 FK']
+  professor_id bigint [not null, ref: > professors.id, note: '담당 교수 FK']
+  classroom_id bigint [ref: > classrooms.id, note: '강의실 FK, 미배정 시 NULL']
+  academic_year smallint [not null, note: '개설 연도']
+  semester smallint [not null, note: '학기(1 또는 2)']
+  section_no smallint [not null, default: 1, note: '분반']
+  capacity smallint [not null, default: 30, note: '수강 정원']
+  schedule_info varchar(100) [note: '강의 시간']
+
+  Indexes {
+    (course_id, academic_year, semester, section_no) [unique, name: 'uq_course_offering']
+  }
+
+  Checks {
+    `academic_year >= 2000` [name: 'chk_offering_year']
+    `semester IN (1, 2)` [name: 'chk_offering_semester']
+    `section_no > 0` [name: 'chk_offering_section']
+    `capacity > 0` [name: 'chk_offering_capacity']
+  }
+}
+
+Table enrollments {
+  student_id bigint [not null, ref: > students.id, note: '학생 FK']
+  offering_id bigint [not null, ref: > course_offerings.id, note: '개설 강좌 FK']
+  enrolled_at date [not null, default: `CURRENT_DATE`, note: '수강 신청일']
+  status varchar(20) [not null, default: 'ENROLLED', note: '수강/취소/이수']
+  score numeric(5,2) [note: '점수(0~100), 성적 확정 전 NULL']
+
+  Indexes {
+    (student_id, offering_id) [pk]
+    (offering_id, student_id) [name: 'idx_enrollment_offering']
+  }
+
+  Checks {
+    `status IN ('ENROLLED', 'CANCELLED', 'COMPLETED')` [name: 'chk_enrollment_status']
+    `score IS NULL OR score BETWEEN 0 AND 100` [name: 'chk_enrollment_score']
+  }
+}

@@ -1,0 +1,8 @@
+pandas>=2,<3
+polars>=1,<2
+matplotlib>=3,<4
+seaborn>=0.13,<1
+plotly>=6,<7
+scipy>=1,<2
+scikit-learn>=1,<2
+joblib>=1,<2
